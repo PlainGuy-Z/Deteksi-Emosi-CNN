@@ -9,6 +9,7 @@ Tujuan utamanya bukan untuk produksi, tapi sebagai *playground* untuk ngoprek mo
 - Menyimpan hasil eksperimen sebelum dipindah ke repository project tim.
 
 ## 📂 Struktur Project
+```
 CNN_Test_Emotion_Detection/
 │
 ├── dataset/
@@ -31,3 +32,4 @@ CNN_Test_Emotion_Detection/
 ├── .gitignore
 ├── main.ipynb
 └── README.MD
+```
