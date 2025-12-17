@@ -59,34 +59,42 @@ data_transform = transforms.Compose([
 # ==========================================
 @st.cache_resource
 def load_model():
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # -----------------------------------------------------------
+    # GANTI ID INI DENGAN ID FILE GOOGLE DRIVE ANDA!
+    # -----------------------------------------------------------
     
+    file_id = '1FxaBs9H7YG6HJP0XIlHVQXtEr166o2r7'
+    
+    output_model_file = 'best_emotion_model.pth'
+    
+    # Cek apakah file sudah ada? Jika belum, download dulu
+    if not os.path.exists(output_model_file):
+        url = f'https://drive.google.com/uc?id={file_id}'
+        st.warning("Sedang mengunduh model dari Google Drive... (Hanya sekali)")
+        gdown.download(url, output_model_file, quiet=False)
+        st.success("Model berhasil diunduh!")
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = EmotionResNet50(num_classes=len(CLASS_NAMES))
     
     try:
-        # GANTI NAMA FILE JIKA PERLU (misal: 'best_emotion_model.pth')
-        checkpoint = torch.load('best_emotion_model.pth', map_location=device)
+        checkpoint = torch.load(output_model_file, map_location=device)
         
-        # Logic pintar untuk handle berbagai format save
         if isinstance(checkpoint, dict) and 'backbone.conv1.weight' in checkpoint:
-             model.load_state_dict(checkpoint) # Format state_dict murni
+             model.load_state_dict(checkpoint)
         elif 'model_state_dict' in checkpoint:
-            model.load_state_dict(checkpoint['model_state_dict']) # Format checkpoint lengkap
+            model.load_state_dict(checkpoint['model_state_dict'])
         else:
-            model.load_state_dict(checkpoint) # Fallback
+            model.load_state_dict(checkpoint)
             
-        print("✅ Model loaded successfully!")
-    except FileNotFoundError:
-        st.error("File model tidak ditemukan! Pastikan nama file benar.")
-        return None, device
     except Exception as e:
-        st.error(f"Gagal memuat model: {e}")
+        st.error(f"Error loading model: {e}")
         return None, device
 
     model = model.to(device)
     model.eval()
     return model, device
-
+    
 # ==========================================
 # 5. FUNGSI PREDIKSI
 # ==========================================
