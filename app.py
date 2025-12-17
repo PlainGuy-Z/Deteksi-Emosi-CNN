@@ -4,6 +4,8 @@ import torch.nn as nn
 from torchvision import models, transforms
 from PIL import Image
 import torch.nn.functional as F
+import os        
+import gdown
 
 # ==========================================
 # 1. KONFIGURASI HALAMAN
